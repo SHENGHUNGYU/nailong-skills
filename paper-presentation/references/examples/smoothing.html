@@ -1,0 +1,73 @@
+<section id="smoothing" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">03 · 方法 · STEP 1</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">平滑與初始選取：累積異常證據</h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:12px;padding:20px 28px">
+<p style="font-size:24px;color:#646C78">① 置中</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#1C2430">δ̃ₜ = δₜ − mean(δ)</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:12px;padding:20px 28px">
+<p style="font-size:24px;color:#646C78">② 累積和＋ReLU（CUSUM）</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#1C2430">Dₜ = max(0, Dₜ₋₁ + δ̃ₜ)</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#FBFAF7;border:2px solid #B4461A;border-radius:12px;padding:20px 28px">
+<p style="font-size:24px;color:#B4461A">③ 正規化後選取</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#1C2430">Dₜ / max D ≥ λ → I₁</p>
+</div>
+</div>
+<x-embed style="position:absolute;left:128px;top:452px;width:1664px;height:460px"><!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}svg{display:block;width:100%;height:100%}.f{transition:opacity .6s}</style></head><body><svg viewBox="0 0 1664 460"></svg><script>
+const S=document.querySelector('svg'),N='http://www.w3.org/2000/svg';
+function E(t,a,p){const e=document.createElementNS(N,t);for(const k in a)e.setAttribute(k,a[k]);(p||S).appendChild(e);return e}
+function T(x,y,s,a,p){const e=E('text',Object.assign({x:x,y:y,'font-size':24,fill:'#4A5361'},a),p);e.textContent=s;return e}
+let sd=5;const R=()=>(sd=(sd*16807)%2147483647)/2147483647;
+const n=40,a0=22,a1=30,d=[];for(let t=0;t<n;t++){let v=1+(R()-.5)*.3;if(t==8)v=1.95;if(t>=a0&&t<=a1)v=1.55+.3*Math.sin((t-a0)/8*Math.PI);d.push(v)}
+const m=d.reduce((a,b)=>a+b,0)/n,c=d.map(v=>v-m),D=[];let acc=0;c.forEach(v=>{acc=Math.max(0,acc+v);D.push(acc)});
+const mx=Math.max.apply(null,D),Dn=D.map(v=>v/mx);
+const X=t=>90+t*39,Z=140,K=110,Y=v=>420-v*190;
+const BG=E('g',{class:'f'});
+T(90,24,'δ̃ₜ：置中後的 kNN 距離',{fill:'#1C2430','font-weight':700});
+E('line',{x1:80,x2:1650,y1:Z,y2:Z,stroke:'#9AA1AB','stroke-width':2});
+T(90,214,'D̂ₜ：正規化的累積異常證據',{fill:'#1C2430','font-weight':700});
+E('line',{x1:80,x2:1650,y1:420,y2:420,stroke:'#9AA1AB','stroke-width':2});
+E('line',{x1:80,x2:1650,y1:Y(.8),y2:Y(.8),stroke:'#B4461A','stroke-width':2,'stroke-dasharray':'8 6'});
+T(1650,Y(.8)-10,'λ = 0.8',{'text-anchor':'end',fill:'#B4461A','font-weight':700});
+T(90,452,'片段 t →',{fill:'#646C78'});T(1650,452,'示意數據',{'text-anchor':'end',fill:'#646C78'});
+const tr=E('g',{class:'f'});
+E('path',{d:'M'+(X(a0)-13)+' 58 v-8 H'+(X(a1)+13)+' v8',fill:'none',stroke:'#2C5F93','stroke-width':3},tr);
+T((X(a0)+X(a1))/2,40,'真實異常：δ̃ 最高的區段',{'text-anchor':'middle',fill:'#2C5F93','font-weight':700},tr);
+const bars=c.map((v,t)=>{const h=Math.abs(v)*K;return E('rect',{x:X(t)-13,y:v>0?Z-h:Z,width:26,height:h,rx:3,fill:v>0?'#B4461A':'#9AA1AB',opacity:0})});
+const line=E('polyline',{fill:'none',stroke:'#1C2430','stroke-width':4,'stroke-linejoin':'round',points:''});
+const sel=[];Dn.forEach((v,t)=>{if(v>=.8)sel.push(t)});
+sel.forEach(t=>E('rect',{x:X(t)-19,y:36,width:39,height:390,fill:'#F3DCCD'},BG));
+S.insertBefore(BG,S.firstChild);
+const lab=E('g',{class:'f'});
+const cx=(X(sel[0])+X(sel[sel.length-1]))/2;
+T(cx,452,'選入 I₁',{'text-anchor':'middle',fill:'#B4461A','font-weight':700},lab);
+T(X(8)+24,Y(.35),'孤立雜訊：很快歸零',{fill:'#4A5361'},lab);
+E('line',{x1:X(8)+20,y1:Y(.33),x2:X(8)+4,y2:Y(Dn[8])-6,stroke:'#4A5361','stroke-width':2},lab);
+const lag=E('g',{class:'f'});
+T(X(15),300,'證據要「累積」到異常尾端才達峰',{fill:'#1C2430','font-weight':700},lag);
+T(X(15),330,'→ I₁ 偏後並溢出（拖尾）',{fill:'#1C2430'},lag);
+function run(){[BG,lab,tr,lag].forEach(g=>g.style.opacity=0);bars.forEach(b=>b.setAttribute('opacity',0));line.setAttribute('points','');
+let pts=[];for(let t=0;t<n;t++)setTimeout(()=>{bars[t].setAttribute('opacity',1);pts.push(X(t)+','+Y(Dn[t]));line.setAttribute('points',pts.join(' '))},300+t*110);
+const e=300+n*110;
+setTimeout(()=>{tr.style.opacity=1},e+300);
+setTimeout(()=>{BG.style.opacity=.85;lab.style.opacity=1},e+1300);
+setTimeout(()=>{lag.style.opacity=1},e+2500);
+setTimeout(run,16000)}
+run();
+</script></body></html></x-embed>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024｜原文 Eq. (1)–(4)</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">10 / 20</p>
+<aside>不過，直接拿 δ_t 來選片段會有雜訊：某一個片段剛好有點奇怪，不代表它就是異常事件。所以作者加了一個平滑步驟，概念上類似變化點偵測裡常用的 CUSUM 累積和。
+
+做法分三步。第一，置中：把 δ_t 減掉整支影片的平均值，正值代表比平常更不像正常。第二，累積：把置中後的值逐段累加，並用 ReLU 擋住負值，也就是 D_t 等於 max(0, D_{t-1} + δ̃_t)。這樣一來，連續出現的可疑片段會讓證據不斷累積；遇到正常片段，證據就慢慢下降、歸零。第三，除以最大值正規化到 0 到 1，超過門檻 λ = 0.8 的片段，就成為初始異常集合 I₁。
+
+看下方動畫：上排是置中後的距離，藍色括號標的是真正的異常區段，也就是紅色長條最高的地方。下排是累積證據曲線。左邊那根孤立的高峰累積不起來，很快就歸零，這就是平滑的好處。
+
+但請注意一個細節：被選進 I₁ 的橘色區域，並不是紅色長條最高的地方，而是偏向異常的後段，甚至溢出到異常結束之後。原因是 D_t 衡量的是「累積」證據，只要 δ̃ 還是正的，曲線就會一直往上爬，所以峰值一定出現在異常的尾端；異常結束後，曲線也只會慢慢下降。用最大值的 80% 當門檻，自然就只選到峰值附近，也就是後段。
+
+這不是動畫畫錯，而是直接套用原文公式的結果，數據則是示意。這個「拖尾」現象代表偽標籤的時間邊界可能不準，我在最後的限制與盲點會再提到。</aside>
+</section>

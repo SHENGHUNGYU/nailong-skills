@@ -1,0 +1,72 @@
+<section id="knn" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">03 · 方法 · STEP 1</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">kNN 距離：離正常越遠，越可疑</h2>
+</div>
+<div style="width:620px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;gap:20px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;color:#B4461A;line-height:1.3">1</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">每支影片以 5 fps 均勻取樣，切成 T 個片段，用預訓練 Uniformer 抽特徵</p>
+</div>
+<div style="display:flex;gap:20px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;color:#B4461A;line-height:1.3">2</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">所有正常影片的片段特徵，組成參考庫 <b style="color:#2C5F93">𝓕ₙ</b></p>
+</div>
+<div style="display:flex;gap:20px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;color:#B4461A;line-height:1.3">3</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">異常影片第 t 段到 𝓕ₙ 的歐氏距離排序，取最近 k 個平均 → <b style="color:#B4461A">δₜ</b></p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:12px;padding:24px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#1C2430">δₜ = mean( 最近 k 個距離 )</p>
+<p style="font-size:24px;color:#646C78">論文設定 k = 20；δₜ 大 ⇒ 越不像正常</p>
+</div>
+</div>
+<x-embed style="position:absolute;left:812px;top:284px;width:980px;height:632px"><!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}svg{display:block;width:100%;height:100%}.f{transition:opacity .4s}</style></head><body><svg viewBox="0 0 980 632"></svg><script>
+const S=document.querySelector('svg'),N='http://www.w3.org/2000/svg';
+function E(t,a,p){const e=document.createElementNS(N,t);for(const k in a)e.setAttribute(k,a[k]);(p||S).appendChild(e);return e}
+function T(x,y,s,a,p){const e=E('text',Object.assign({x:x,y:y,'font-size':24,fill:'#4A5361'},a),p);e.textContent=s;return e}
+let sd=11;const R=()=>(sd=(sd*16807)%2147483647)/2147483647,G=()=>R()+R()+R()-1.5;
+E('rect',{x:0,y:44,width:620,height:520,rx:14,fill:'#FBFAF7',stroke:'#DEDCD4','stroke-width':1.5});
+T(0,30,'特徵空間（示意，k = 5）',{fill:'#646C78'});
+const C=[[170,230,60],[300,420,62],[110,450,40]],P=[];
+C.forEach(c=>{for(let i=0;i<22;i++)P.push([c[0]+G()*c[2]*1.6,c[1]+G()*c[2]*1.6])});
+const LG=E('g',{});
+P.forEach(p=>E('circle',{cx:p[0],cy:p[1],r:7,fill:'#2C5F93',opacity:.7}));
+const A=[[250,280],[270,330],[350,270],[450,190],[530,130],[510,230],[400,350],[300,390]];
+const D=A.map(a=>{const d=P.map(p=>[Math.hypot(p[0]-a[0],p[1]-a[1]),p]).sort((x,y)=>x[0]-y[0]).slice(0,5);return{nn:d,v:d.reduce((s,x)=>s+x[0],0)/5}});
+const mx=Math.max.apply(null,D.map(d=>d.v));
+const TR=E('g',{});
+const pt=E('circle',{cx:A[0][0],cy:A[0][1],r:12,fill:'#B4461A',stroke:'#FBFAF7','stroke-width':3});
+T(660,30,'δₜ（kNN 距離）',{fill:'#1C2430','font-weight':700});
+E('line',{x1:650,x2:970,y1:520,y2:520,stroke:'#9AA1AB','stroke-width':2});
+const B=[];
+for(let i=0;i<8;i++){const x=660+i*38;B.push(E('rect',{x:x,y:520,width:30,height:0,rx:4,fill:'#B4461A'}));T(x+15,552,'t'+(i+1),{'text-anchor':'middle','font-size':22})}
+E('circle',{cx:14,cy:598,r:8,fill:'#2C5F93'});T(30,606,'正常片段 𝓕ₙ');
+E('circle',{cx:234,cy:598,r:9,fill:'#B4461A'});T(252,606,'異常影片的片段（依時間 t）');
+function tw(d,f,cb){const t0=performance.now();(function s(t){const p=Math.min(1,(t-t0)/d);f(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1)requestAnimationFrame(s);else if(cb)cb()})(t0)}
+let cur=A[0].slice();
+function stepTo(i){const a=A[i],b=cur.slice();
+tw(450,p=>{pt.setAttribute('cx',b[0]+(a[0]-b[0])*p);pt.setAttribute('cy',b[1]+(a[1]-b[1])*p)},()=>{cur=a.slice();
+while(LG.firstChild)LG.removeChild(LG.firstChild);
+D[i].nn.forEach(n=>E('line',{x1:a[0],y1:a[1],x2:n[1][0],y2:n[1][1],stroke:'#B4461A','stroke-width':2.5,opacity:.65},LG));
+E('circle',{cx:a[0],cy:a[1],r:6,fill:'none',stroke:'#B4461A','stroke-width':2},TR);
+T(a[0]+12,a[1]-12,'t'+(i+1),{'font-size':22,fill:'#B4461A'},TR);
+const h=D[i].v/mx*400;tw(400,p=>{B[i].setAttribute('y',520-h*p);B[i].setAttribute('height',h*p)})})}
+function run(){while(TR.firstChild)TR.removeChild(TR.firstChild);while(LG.firstChild)LG.removeChild(LG.firstChild);
+B.forEach(b=>{b.setAttribute('y',520);b.setAttribute('height',0)});cur=A[0].slice();
+for(let i=0;i<8;i++)setTimeout(()=>stepTo(i),300+i*1250);
+setTimeout(run,300+8*1250+3500)}
+run();
+</script></body></html></x-embed>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024｜原文 §3.2 Distance Calculation</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">09 / 20</p>
+<aside>第一步：kNN 距離。
+
+首先，每支影片以每秒 5 幀的速度均勻取樣，切成 T 個片段，再用預訓練好的 Uniformer 抽出每個片段的特徵向量。接著，把所有正常影片的所有片段特徵收集起來，形成一個參考庫 F_n，可以把它想成「正常長什麼樣子」的記憶。
+
+對異常影片的每一個片段 t，計算它和參考庫中每一個正常片段的歐氏距離，排序之後取最近的 k 個做平均，就得到 δ_t。直覺很簡單：一個片段離正常群越遠，就越可能是異常。
+
+看右邊的動畫：藍點是正常片段，橘點是異常影片中依時間順序出現的片段。每到一個位置，它會連到最近的幾個正常點，右邊的長條就是對應的 δ_t。可以看到，當橘點走到遠離藍色群集的地方，例如 t4、t5，長條就明顯升高。
+
+論文設定 k 等於 20，這裡為了好看只畫 5 條線。值得一提的是，這一步完全不需要訓練，只用到預訓練特徵和距離計算。</aside>
+</section>

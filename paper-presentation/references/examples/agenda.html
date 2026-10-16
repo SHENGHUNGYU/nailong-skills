@@ -1,0 +1,48 @@
+<section id="agenda" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">AGENDA</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">今天的報告路線</h2>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:24px;align-items:stretch">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A">01</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">背景</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">弱監督影片異常偵測（wVAD）與主流流程</p>
+<div style="flex:1"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">≈ 3 min</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A">02</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">問題</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">決策週期過長與記憶體瓶頸</p>
+<div style="flex:1"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">≈ 3 min</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:2px solid #B4461A;border-radius:16px;padding:36px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A">03</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">方法</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">REWARD：kNN → MLP → 端到端 Transformer</p>
+<div style="flex:1"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">≈ 6 min</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A">04</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">實驗</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">即時效能、運算效率與消融分析</p>
+<div style="flex:1"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">≈ 4 min</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A">05</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">評析</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">結論與限制盲點</p>
+<div style="flex:1"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">≈ 3 min</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">02 / 20</p>
+<aside>今天的報告分成五個部分。
+
+第一部分先說明什麼是弱監督影片異常偵測，以及目前主流的做法長什麼樣子。第二部分點出這篇論文要解決的兩個問題：決策週期太長，以及端到端訓練會遇到的記憶體瓶頸。第三部分是重點，也是時間最長的部分，我會一步一步拆解 REWARD 的三個階段。第四部分看實驗數據是否支持作者的宣稱。最後一部分，我會用一頁總結結論，並提出我認為這篇論文的限制與盲點。</aside>
+</section>

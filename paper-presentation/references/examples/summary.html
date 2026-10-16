@@ -1,0 +1,37 @@
+<section id="summary" data-transition="fade" style="background:#ECEBE5;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">05 · 結論</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">結論</h2>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF7;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">核心研究問題</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">現有 wVAD 依賴整段影片的特徵聚合，決策週期長達數分鐘，無法即時；而端到端訓練又受限於度量學習損失的記憶體需求</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF7;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">核心貢獻與創新</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">首個即時、端到端的 wVAD 方法 REWARD：以自監督偽標籤把問題轉為 BCE 分類，捨棄特徵聚合</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF7;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">研究方法與流程</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">kNN 距離 → CUSUM 平滑選取 I₁ → MLP 精煉得 I₂ → Uniformer-32 端到端微調；以 6.4 秒滑動視窗推論</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1C2430;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F08A4B">主要發現</p>
+<p style="font-size:28px;line-height:1.5;color:#F6F5F1">即時設定下 UCF 86.94% AUC（+4.78）、XD 77.71% AP（+4.54）；63.3 fps；離線亦達 SOTA 水準</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">18 / 20</p>
+<aside>最後，我把整篇論文的結論濃縮成一頁。
+
+核心研究問題：現有的弱監督異常偵測方法依賴對整段影片做特徵聚合，決策週期長達數分鐘，沒辦法即時；而想改用端到端訓練，又會卡在度量學習損失的記憶體需求。
+
+核心貢獻：提出第一個即時、端到端的 wVAD 方法 REWARD。關鍵創新是用自監督的偽標籤，把問題轉成可以用 BCE 解的分類問題，同時捨棄了特徵聚合這個步驟。
+
+研究方法：kNN 距離、CUSUM 平滑選出 I₁，MLP 精煉成 I₂，最後端到端微調 Uniformer-32，以 6.4 秒的滑動視窗推論。
+
+主要發現：即時設定下，UCF-Crime 86.94% AUC、XD-Violence 77.71% AP，分別比最佳 baseline 高 4.78 和 4.54 個百分點；推論速度 63.3 fps；離線設定也達到 SOTA 水準。
+
+整體而言，數據確實支持作者「即時設定下大幅領先」的主張。但支持的力道有多強？下一頁我要談幾個限制與盲點。</aside>
+</section>

@@ -1,0 +1,43 @@
+<section id="results" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">04 · 實驗 · 即時設定</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">決策週期更短，效能仍明顯領先</h2>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#4A5361">Baseline 決策週期 8.533 s；REWARD 為 6.4 s</p>
+<x-embed style="position:absolute;left:128px;top:356px;width:1664px;height:560px"><!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}svg{display:block;width:100%;height:100%}.f{transition:opacity .6s}</style></head><body><svg viewBox="0 0 1664 560"></svg><script>
+const S=document.querySelector('svg'),N='http://www.w3.org/2000/svg';
+function E(t,a,p){const e=document.createElementNS(N,t);for(const k in a)e.setAttribute(k,a[k]);(p||S).appendChild(e);return e}
+function T(x,y,s,a,p){const e=E('text',Object.assign({x:x,y:y,'font-size':24,fill:'#4A5361'},a),p);e.textContent=s;return e}
+const P=[{x:0,t:'UCF-Crime · AUC (%)',best:82.16,d:'較最佳 baseline（82.16）+4.78',r:[['S3R · I3D',81.34],['S3R · Uni',82.16],['RTFM · I3D',80.63],['RTFM · Uni',81.22],['MGFN · I3D',81.76],['MGFN · Uni',80.99],['REWARD',86.94]]},
+{x:852,t:'XD-Violence · AP (%)',best:73.17,d:'較最佳 baseline（73.17）+4.54',r:[['S3R · I3D',70.14],['S3R · Uni',69.51],['RTFM · I3D',72.6],['RTFM · Uni',65.35],['MGFN · I3D',73.17],['MGFN · Uni',67.46],['REWARD',77.71]]}];
+const bars=[],vals=[],dl=[];
+P.forEach(p=>{const x0=p.x,bx=x0+190,bw=480,sx=v=>bx+(v-60)/30*bw;
+T(x0,30,p.t,{fill:'#1C2430','font-weight':700,'font-size':28});
+T(x0+812,30,'軸自 60 起',{'text-anchor':'end',fill:'#646C78'});
+[60,70,80,90].forEach(v=>{E('line',{x1:sx(v),x2:sx(v),y1:56,y2:500,stroke:'#DEDCD4','stroke-width':1.5});T(sx(v),524,v,{'text-anchor':'middle','font-size':22,fill:'#646C78'})});
+E('line',{x1:sx(p.best),x2:sx(p.best),y1:56,y2:500,stroke:'#646C78','stroke-width':2,'stroke-dasharray':'6 6'});
+p.r.forEach((r,i)=>{const y=64+i*62,me=r[0]=='REWARD';
+T(x0,y+30,r[0],{fill:me?'#B4461A':'#1C2430','font-weight':me?700:400});
+const b=E('rect',{x:bx,y:y,width:0,height:42,rx:4,fill:me?'#B4461A':'#9AA1AB'});
+const v=T(sx(r[1])+10,y+30,r[1].toFixed(2),{fill:me?'#B4461A':'#4A5361','font-weight':me?700:400,class:'f'});
+bars.push([b,sx(r[1])-bx,me]);vals.push(v)});
+dl.push(T(x0,552,p.d,{fill:'#B4461A','font-weight':700,'font-size':26,class:'f'}))});
+function tw(d,f){const t0=performance.now();(function s(t){const p=Math.min(1,(t-t0)/d);f(1-Math.pow(1-p,3));if(p<1)requestAnimationFrame(s)})(t0)}
+function run(){bars.forEach(b=>b[0].setAttribute('width',0));vals.concat(dl).forEach(v=>v.style.opacity=0);
+let k=0;bars.forEach((b,i)=>{const delay=b[2]?1700:200+(i%7)*150;setTimeout(()=>{tw(700,p=>b[0].setAttribute('width',b[1]*p));setTimeout(()=>vals[i].style.opacity=1,600)},delay)});
+setTimeout(()=>dl.forEach(d=>d.style.opacity=1),2800);
+setTimeout(run,13000)}
+run();
+</script></body></html></x-embed>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#646C78">資料：原文 Table 1、Table 2｜虛線 = 最佳 baseline｜Uni = Uniformer-32 特徵</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">15 / 20</p>
+<aside>這是主要結果，對應原文 Table 1 和 Table 2。
+
+設定是即時情境：三個 baseline 的決策週期都是 8.533 秒，也就是推論時一次只能看 8 個 32 幀的片段；REWARD 則是 6.4 秒，看得更少。每個 baseline 都分別用 I3D 和 Uniformer-32 特徵重跑。
+
+左邊 UCF-Crime：最好的 baseline 是 S3R 搭配 Uniformer 特徵，82.16%；REWARD 達到 86.94%，高出 4.78 個百分點。右邊 XD-Violence：最好的 baseline 是 MGFN 搭配 I3D，73.17%；REWARD 77.71%，高出 4.54 個百分點。
+
+有兩個細節值得注意。第一，REWARD 在 UCF-Crime 上用 6.4 秒得到的 86.94%，甚至超過 S3R 看完整支影片的 85.99%。第二，baseline 換成 Uniformer 特徵後，表現大多沒有比 I3D 好，在 XD-Violence 上甚至明顯變差，例如 RTFM 從 72.6 掉到 65.35。這代表這些方法的特徵聚合模組，可能是針對 I3D 特徵調校的。這一點也影響比較的公平性，稍後評析會提到。
+
+另外請注意，長條圖的橫軸是從 60% 開始，差距看起來會比較明顯。</aside>
+</section>

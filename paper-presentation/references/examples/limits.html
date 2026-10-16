@@ -1,0 +1,38 @@
+<section id="limits" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">05 · 評析 · 審稿人視角</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">潛在限制與盲點</h2>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:20px;background:#FBFAF7;border:2px solid #B4461A;border-radius:16px;padding:40px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A;line-height:1.1">01</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">比較公平性</h3>
+<p style="font-size:28px;line-height:1.5;color:#4A5361">Baseline 以長序列訓練、卻在短視窗下測試，未針對短視窗重新訓練或調參</p>
+<div style="flex:1"></div>
+<p style="font-size:26px;line-height:1.5;color:#B4461A">→ +4.78 的差距可能被放大</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:40px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A;line-height:1.1">02</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">偽標籤品質未驗證</h3>
+<p style="font-size:28px;line-height:1.5;color:#4A5361">未報告 I₁、I₂ 與真實異常幀的重疊率（precision／recall）</p>
+<div style="flex:1"></div>
+<p style="font-size:26px;line-height:1.5;color:#B4461A">→ 無法判斷誤差來自哪一步</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:40px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:600;color:#B4461A;line-height:1.1">03</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">CUSUM 的拖尾</h3>
+<p style="font-size:28px;line-height:1.5;color:#4A5361">累積證據在異常尾端才達峰、結束後仍偏高，選取區段整體後移</p>
+<div style="flex:1"></div>
+<p style="font-size:26px;line-height:1.5;color:#B4461A">→ 偽標籤的時間邊界不準</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">報告人評析，非原文內容</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">19 / 20</p>
+<aside>接下來是我站在審稿人的角度，認為這篇論文最值得注意的三個限制與盲點。
+
+第一，也是我認為最重要的：比較公平性。baseline 原本都是用整支影片的長序列訓練，作者只在測試時把視窗縮短，並沒有讓 baseline 針對短視窗重新訓練或調參。這等於讓 baseline 在「訓練與測試不一致」的條件下比賽，4.78 個百分點的差距可能因此被放大。另外，baseline 換成 Uniformer 特徵後表現大多變差，也暗示它們的超參數沒有針對新特徵重新調整。
+
+第二，偽標籤品質沒有被直接驗證。整個方法的基礎是偽標籤，但論文沒有報告 I₁、I₂ 和真實異常幀的重疊程度。我們無法知道 kNN 和 MLP 各自貢獻多少，也無法判斷錯誤是從哪一步來的。
+
+第三，CUSUM 的拖尾效應。就像前面平滑那一頁的動畫，累積和要到異常的尾端才會達到峰值，異常結束後也只會慢慢下降。用最大值的 80% 當門檻，選出來的區段就會整體往後偏移，甚至包含異常結束後的正常片段。這代表偽標籤的時間邊界可能不準，而後續的 MLP 和 Transformer 都是建立在這些標籤之上。</aside>
+</section>

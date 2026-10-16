@@ -1,0 +1,40 @@
+<section id="ablation" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">04 · 實驗 · 消融</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">端到端訓練真的有幫助嗎？</h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#ECEBE5;border-radius:12px;padding:24px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">REWARD-TL（遷移學習）</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">凍結 Uniformer-32，只用相同偽標籤訓練一個 MLP</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#ECEBE5;border-radius:12px;padding:24px 28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">REWARD-E2E（端到端）</p>
+<p style="font-size:28px;line-height:1.5;color:#1C2430">相同偽標籤，連同影片模型一起微調</p>
+</div>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">UCF-CRIME · AUC (%)</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#1C2430;line-height:1.1"><span style="color:#646C78">85.30</span> → 86.94</p>
+<p style="font-size:30px;font-weight:700;color:#B4461A;background:#F3DCCD;border-radius:999px;padding:8px 24px;align-self:flex-start">+1.64 個百分點</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">XD-VIOLENCE · AP (%)</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#1C2430;line-height:1.1"><span style="color:#646C78">75.25</span> → 77.71</p>
+<p style="font-size:30px;font-weight:700;color:#B4461A;background:#F3DCCD;border-radius:999px;padding:8px 24px;align-self:flex-start">+2.46 個百分點</p>
+</div>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#4A5361">場景越複雜（XD-Violence），端到端微調帶來的增益越大</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">資料：原文 Table 4</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">17 / 20</p>
+<aside>接下來是消融實驗，回答一個關鍵問題：端到端訓練真的有幫助嗎？還是好表現其實全部來自偽標籤？
+
+作者設計了一個對照組叫 REWARD-TL，也就是遷移學習版本：把 Uniformer-32 凍結，只拿它的預訓練特徵，配上完全相同的偽標籤 I₂，訓練一個和自監督階段同樣設定的 MLP。另一組 REWARD-E2E 則是正式版本，連同影片模型一起微調。
+
+結果是：在 UCF-Crime 上，AUC 從 85.30 提升到 86.94，多了 1.64 個百分點；在 XD-Violence 上，AP 從 75.25 提升到 77.71，多了 2.46 個百分點。
+
+我的解讀是：場景越複雜、鏡頭越常移動的 XD-Violence，預訓練特徵越不夠用，端到端微調的增益也就越大。
+
+但也可以反過來看：即使不做端到端，只靠偽標籤加 MLP 的 TL 版本，在 UCF-Crime 就已經有 85.30%，遠高於即時設定下的所有 baseline。這暗示 REWARD 的增益有很大一部分來自「偽標籤機制與不依賴聚合」，而不只是端到端本身。</aside>
+</section>

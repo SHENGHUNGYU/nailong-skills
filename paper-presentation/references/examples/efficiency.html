@@ -1,0 +1,43 @@
+<section id="efficiency" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">04 · 實驗 · 運算效率</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">單一模型，總延遲不到 7 秒</h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:80px;font-weight:600;color:#1C2430;line-height:1.1">63.3</p>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">fps：Uniformer-32 推論速度（RTX 2070）</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:80px;font-weight:600;color:#B4461A;line-height:1.1">0.5 s</p>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">處理一個 32 幀視窗所需時間</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#1C2430;border-radius:16px;padding:32px 36px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:80px;font-weight:600;color:#F08A4B;line-height:1.1">6.9 s</p>
+<p style="font-size:26px;line-height:1.5;color:#B9C2CE">總決策延遲 = 6.4 s 視窗 + 0.5 s 運算</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;color:#646C78">決策延遲的組成（等比例）</p>
+<div style="display:flex">
+<div style="flex:64;display:flex;align-items:center;background:#2C5F93;border-radius:10px 0px 0px 10px;padding:12px 24px">
+<p style="font-size:26px;color:#F6F5F1">等待 32 幀（5 fps）· 6.4 s</p>
+</div>
+<div style="flex:5;background:#B4461A;border-radius:0px 10px 10px 0px"></div>
+</div>
+<p style="font-size:24px;color:#B4461A;text-align:right">運算 0.5 s ↑</p>
+</div>
+<div style="display:flex;gap:20px;align-items:center;background:#ECEBE5;border-radius:12px;padding:24px 32px">
+<x-icon name="Clock" style="color:#4A5361;width:36px;height:36px"></x-icon>
+<p style="font-size:26px;line-height:1.5;color:#1C2430">訓練端成本：kNN 偽標籤計算在 i7-8700K CPU 上約 5 小時（UCF-Crime），屬一次性離線成本</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">資料：原文 Table 3、§4.4</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">16 / 20</p>
+<aside>除了準確度，即時偵測還要看運算效率，對應原文 Table 3。
+
+因為 REWARD 拿掉了特徵編碼器與特徵聚合，推論時只剩一個 Uniformer-32。作者在一張 RTX 2070 上測得 63.3 fps，所以處理一個 32 幀的視窗大約只要 0.5 秒。加上等待 32 幀收集完成的 6.4 秒，總決策延遲大約是 6.9 秒。
+
+下面這條等比例的長條可以看到，延遲的主要來源其實不是運算，而是「等資料」：藍色的 6.4 秒是取樣視窗，橘色那一小段才是模型運算。換句話說，如果想進一步降低延遲，關鍵在於縮短視窗或提高取樣率，而不是換更快的 GPU。
+
+訓練端也有一個一次性的成本：在 UCF-Crime 上，用 CPU 計算 kNN 偽標籤大約花了 5 小時。這是離線成本，不影響推論，但當正常影片數量變多時，kNN 的計算量會跟著成長，這是一個可擴展性的隱憂。</aside>
+</section>

@@ -1,0 +1,41 @@
+<section id="datasets" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">04 · 實驗</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">資料集與評估方式</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">UCF-CRIME · 指標 AUC</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#1C2430;line-height:1.1">1,900 <span style="color:#646C78">支</span></p>
+<ul style="font-size:26px;line-height:1.5;color:#4A5361">
+<li>真實監視器影片，13 類異常（虐待、搶劫、縱火、爆炸、車禍…）</li>
+<li>訓練 1,610：正常 810／異常 800</li>
+<li>測試 290 支</li>
+<li>固定視角，場景單純</li>
+</ul>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:36px 40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">XD-VIOLENCE · 指標 AP</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#1C2430;line-height:1.1">4,754 <span style="color:#646C78">支</span></p>
+<ul style="font-size:26px;line-height:1.5;color:#4A5361">
+<li>來源多元：監視器、電影、行車紀錄器、電玩</li>
+<li>訓練 3,954：異常 1,900+／正常 2,000+</li>
+<li>本文只用影像，捨棄音訊</li>
+<li>鏡頭移動、場景切換頻繁</li>
+</ul>
+</div>
+</div>
+<div style="display:flex;gap:20px;align-items:center;background:#ECEBE5;border-radius:12px;padding:24px 32px">
+<x-icon name="Search" style="color:#B4461A;width:36px;height:36px"></x-icon>
+<p style="font-size:26px;line-height:1.5;color:#1C2430">比較對象 RTFM、S3R、MGFN：以 I3D 與 Uniformer-32 兩種特徵重跑，推論視窗 4–256 個片段，四次試驗取平均</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024｜原文 §4.1–4.2</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">14 / 20</p>
+<aside>接下來看實驗。作者使用 wVAD 領域最常見的兩個資料集。
+
+左邊是 UCF-Crime，共 1,900 支真實監視器影片，涵蓋 13 種異常，例如虐待、搶劫、縱火、爆炸與交通事故。訓練集 1,610 支，正常與異常大約各半；測試集 290 支。評估指標是幀層級的 ROC 曲線下面積，也就是 AUC。
+
+右邊是 XD-Violence，規模更大，有 4,754 支未裁剪影片，來源非常多元，包含監視器、電影、行車紀錄器，甚至電玩畫面。原始資料集有音訊，但作者為了公平比較，只使用影像。因為異常比例不平衡，這個資料集慣用的指標是 AP，也就是 precision-recall 曲線下面積，它對異常的偵測能力更敏感。
+
+比較對象是三個近年 SOTA：RTFM、S3R 和 MGFN。作者用 I3D 和 Uniformer-32 兩種特徵各重跑一次，推論時的視窗大小從 4 個片段一路調到 256 個片段，四次試驗取平均。這個「重跑 baseline」的設定，是後面討論公平性時的重點。</aside>
+</section>

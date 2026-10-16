@@ -1,0 +1,47 @@
+<section id="bottleneck" data-transition="fade" style="background:#F6F5F1;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">02 · 問題</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">為什麼過去不做端到端訓練？</h2>
+</div>
+<div style="position:absolute;left:128px;top:300px;width:808px;display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2C5F93">現有做法</p>
+<h3 style="font-size:36px;font-weight:700;line-height:1.2;color:#1C2430">只訓練特徵編碼器</h3>
+<ul style="font-size:28px;line-height:1.5;color:#4A5361">
+<li>輸入：預先抽好的特徵向量（很輕）</li>
+<li>一個 batch 可放多組正常＋異常 bag</li>
+<li>MIL／度量學習損失：可行</li>
+</ul>
+<div style="display:flex;gap:12px;align-items:center">
+<x-icon name="CheckCircle" style="color:#2C5F93;width:40px;height:40px"></x-icon>
+<p style="font-size:28px;font-weight:700;color:#2C5F93">單張 GPU 放得下</p>
+</div>
+</div>
+<div style="position:absolute;left:984px;top:300px;width:808px;display:flex;flex-direction:column;gap:16px;background:#FBFAF7;border:2px solid #B4461A;border-radius:16px;padding:40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">若沿用 MIL 做端到端</p>
+<h3 style="font-size:36px;font-weight:700;line-height:1.2;color:#1C2430">連特徵擷取器一起訓練</h3>
+<ul style="font-size:28px;line-height:1.5;color:#4A5361">
+<li>輸入：大量原始影片片段</li>
+<li>需同時放入等量正常與異常影片</li>
+<li>擷取器參數量高出數個數量級</li>
+</ul>
+<div style="display:flex;gap:12px;align-items:center">
+<x-icon name="Warning" style="color:#B4461A;width:40px;height:40px"></x-icon>
+<p style="font-size:28px;font-weight:700;color:#B4461A">記憶體不足，訓練不可行</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;top:752px;width:1664px;display:flex;gap:24px;align-items:center;background:#1C2430;border-radius:16px;padding:32px 40px">
+<x-icon name="Lightbulb" style="color:#F08A4B;width:48px;height:48px"></x-icon>
+<p style="font-size:30px;line-height:1.4;color:#F6F5F1">REWARD 的解法：把度量學習損失換成逐樣本的 <b>BCE</b>，前提是要有<span style="color:#F08A4B">片段層級的偽標籤</span></p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">Karim, Doshi &amp; Yilmaz · WACV 2024｜參考原文 Fig. 4、§3.1</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">07 / 20</p>
+<aside>既然端到端訓練有這麼多好處，為什麼過去的方法都沒有這樣做？作者指出關鍵在於「記憶體瓶頸」。
+
+目前 wVAD 幾乎都用 MIL ranking loss 這類度量學習損失。它的設計是：在同一個 batch 裡，同時放入等量的正常影片與異常影片，讓異常影片中分數最高的片段，比正常影片中分數最高的片段更高。也就是說，它天生需要「成對、成批」的資料。
+
+左邊是現有做法：只訓練特徵編碼器，輸入是事先抽好的特徵向量，很輕，一個 batch 塞很多組 bag 也沒問題。
+
+右邊則是如果我們要連特徵擷取器一起訓練：輸入變成大量原始影片片段，而且擷取器的參數量比編碼器高出好幾個數量級，單張 GPU 根本放不下。
+
+所以 REWARD 的切入點非常務實：既然問題出在損失函數，那就把它換掉——換成每個樣本可以獨立計算的二元交叉熵 BCE。但 BCE 需要片段層級的標籤，這正是我們沒有的。接下來的方法，就是在解決「標籤從哪裡來」這件事。</aside>
+</section>

@@ -1,0 +1,21 @@
+<section id="question" data-transition="fade" style="background:#1C2430;color:#F6F5F1;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:56px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F08A4B;letter-spacing:3px">RESEARCH QUESTION</p>
+<h1 style="font-family:'Noto Serif TC', Georgia, serif;font-size:80px;font-weight:700;line-height:1.3;color:#F6F5F1">wVAD 模型能否在<span style="color:#F08A4B">短決策週期</span>下訓練，<br>做到即時偵測？</h1>
+<div style="display:flex;gap:96px;align-items:flex-end">
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#F6F5F1;line-height:1.1">6.4 s <span style="color:#7F8A99">vs</span> 273 s</p>
+<p style="font-size:28px;color:#B9C2CE">REWARD 與離線 SOTA 的決策週期</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:72px;font-weight:600;color:#F08A4B;line-height:1.1">≈ 43×</p>
+<p style="font-size:28px;color:#B9C2CE">更短，但 AUC 更高</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1300px;font-size:24px;color:#9AA4B2">作者定義：決策週期 &lt; 30 秒即視為即時／近即時</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9AA4B2">06 / 20</p>
+<aside>所以這篇論文的研究問題，可以濃縮成一句話：弱監督異常偵測的模型，能不能在很短的決策週期下訓練，做到即時偵測？
+
+作者的答案是肯定的。REWARD 的決策週期是 6.4 秒，而離線 SOTA 要看完整支、平均約 273 秒的影片，差距大約 43 倍，但 REWARD 的 AUC 反而更高。
+
+補充一點：「30 秒以內就算即時」是作者自己在註腳中給的定義；對於打架、跌倒這類幾秒內就結束的事件，這個標準是否足夠，值得大家思考。</aside>
+</section>

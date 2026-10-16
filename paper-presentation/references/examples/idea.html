@@ -1,0 +1,39 @@
+<section id="idea" data-transition="fade" style="background:#ECEBE5;color:#1C2430;font-family:'Noto Sans TC', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A;letter-spacing:2px">03 · 方法 · REWARD</p>
+<h2 style="font-family:'Noto Serif TC', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#1C2430">核心想法：用弱分類器訓練強分類器</h2>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#4A5361">影片層級標籤 → <b style="color:#B4461A">片段層級偽標籤</b> → 一般二元分類（BCE），不再需要成對的大 batch</p>
+<div style="position:absolute;left:188px;top:440px;width:440px;display:flex;flex-direction:column;gap:12px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:32px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">STEP 1</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">kNN 距離</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">找出「最不像正常」的片段，平滑後保守選取</p>
+<p style="font-size:24px;color:#1C2430;background:#F3DCCD;border-radius:8px;padding:8px 14px">輸出：初始集合 I₁</p>
+</div>
+<x-shape kind="arrow-right" style="position:absolute;left:648px;top:560px;width:72px;height:36px;background:#9AA1AB"></x-shape>
+<div style="position:absolute;left:740px;top:440px;width:440px;display:flex;flex-direction:column;gap:12px;background:#FBFAF7;border:1px solid #DEDCD4;border-radius:16px;padding:32px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B4461A">STEP 2</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#1C2430">MLP 分類器</h3>
+<p style="font-size:26px;line-height:1.5;color:#4A5361">以 I₁ 訓練，泛化到整支影片，再次精煉選取</p>
+<p style="font-size:24px;color:#1C2430;background:#F3DCCD;border-radius:8px;padding:8px 14px">輸出：最終集合 I₂</p>
+</div>
+<x-shape kind="arrow-right" style="position:absolute;left:1200px;top:560px;width:72px;height:36px;background:#9AA1AB"></x-shape>
+<div style="position:absolute;left:1292px;top:440px;width:440px;display:flex;flex-direction:column;gap:12px;background:#1C2430;border-radius:16px;padding:32px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F08A4B">STEP 3</p>
+<h3 style="font-size:40px;font-weight:700;line-height:1.2;color:#F6F5F1">影片 Transformer</h3>
+<p style="font-size:26px;line-height:1.5;color:#B9C2CE">以 I₂ 為標籤，端到端訓練 Uniformer-32</p>
+<p style="font-size:24px;color:#1C2430;background:#F08A4B;border-radius:8px;padding:8px 14px">輸出：即時異常分數</p>
+</div>
+<div style="position:absolute;left:188px;top:810px;width:1544px;height:12px;border-radius:6px;background:linear-gradient(90deg, #C9D6E3 0%, #B4461A 100%)"></div>
+<p style="position:absolute;left:188px;top:836px;width:400px;font-size:24px;color:#646C78">弱：簡單、只看特徵距離</p>
+<p style="position:absolute;left:1232px;top:836px;width:500px;text-align:right;font-size:24px;color:#B4461A">強：大型模型、直接看原始影格</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#646C78">REWARD = Real-time End-to-end Weakly supervised video Anomaly Relevance Detector</p>
+<p style="position:absolute;right:128px;bottom:64px;width:240px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#646C78">08 / 20</p>
+<aside>進入方法。REWARD 的核心想法只有一句話：把影片層級的標籤，轉換成片段層級的偽標籤。一旦每個片段都有了標籤，wVAD 就變成一般的二元分類問題，可以用 BCE，每個片段獨立計算損失，不再需要成對的大 batch，記憶體瓶頸也就解開了。
+
+偽標籤從哪裡來？作者用了「弱分類器訓練強分類器」的漸進策略，分成三步。
+
+第一步，用 kNN 距離找出異常影片中最不像正常的片段，經過平滑後保守地選出初始集合 I₁。第二步，用 I₁ 訓練一個 MLP 分類器，讓它泛化到整支影片，再精煉一次，得到最終集合 I₂。第三步，拿 I₂ 當標籤，端到端訓練大型影片 Transformer，也就是 Uniformer-32，最後輸出即時的異常分數。
+
+下方這條漸層代表分類器的能力由弱到強：從只看特徵距離的 kNN，到直接看原始影格的大模型。名稱 REWARD 則是 Real-time End-to-end Weakly supervised video Anomaly Relevance Detector 的縮寫。接下來逐步拆解。</aside>
+</section>
