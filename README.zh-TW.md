@@ -14,31 +14,90 @@
 
 ## 安裝方式
 
-透過 HTTPS 下載：
+下載專案後，選擇對應工具執行安裝程式。需要 Python 3，不需要額外套件。
 
 ```bash
 git clone https://github.com/SHENGHUNGYU/nailong-skills.git
 cd nailong-skills
+
+# 先預覽，再將所有 skills 安裝到個人帳號範圍
+sh scripts/install.sh --agent codex --scope user --dry-run
+sh scripts/install.sh --agent codex --scope user
 ```
 
-如果已設定 GitHub SSH 金鑰，也可以使用：
+SSH 替代方式：`git clone git@github.com:SHENGHUNGYU/nailong-skills.git`。
+
+### 支援的 agent 工具
+
+官方文件查核日期：**2026-10-16**。每個安裝目錄下都會放入完整的 `<skill-name>/` 資料夾。請從下表選擇 `--agent`；需要其他工具時，再執行一次安裝。
+
+| 工具 | `--agent` | 專案安裝目錄 | 個人安裝目錄 |
+| --- | --- | --- | --- |
+| Codex | `codex` | `.agents/skills/` | `~/.agents/skills/` |
+| Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
+| Cursor | `cursor` | `.cursor/skills/` | `~/.cursor/skills/` |
+| GitHub Copilot | `copilot` | `.github/skills/` | `~/.copilot/skills/` |
+| Gemini CLI | `gemini-cli` | `.gemini/skills/` | `~/.gemini/skills/` |
+| Windsurf / Cascade | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
+| OpenCode | `opencode` | `.opencode/skills/` | `~/.config/opencode/skills/` |
+
+表格列出本安裝程式選用的原生路徑，並非各工具支援的全部位置。OpenCode 會遵循已設定的 `XDG_CONFIG_HOME`。Windsurf 目前的文件已導向 Devin Desktop，上表的舊版 Windsurf 路徑仍列為支援。詳見[官方來源與相容性說明](docs/agent-compatibility.md)。
+
+### 安裝到既有專案
 
 ```bash
-git clone git@github.com:SHENGHUNGYU/nailong-skills.git
+sh scripts/install.sh --agent claude-code --scope project \
+  --project /path/to/your-project --skill paper-presentation
 ```
 
-將完整的 skill 資料夾複製到 AI 工具支援的 skills 目錄。安裝位置與自動載入規則依工具而異，請依該工具的安裝說明操作。請保留 `SKILL.md`、`references/` 與 `scripts/`，避免缺少流程需要的資料與工具。
+預設範圍為 `--scope user`。專案範圍必須明確提供已存在的 `--project` 目錄，不會自動安裝到剛下載的 skills 專案中。不指定 `--skill` 時安裝全部，也可以重複使用此參數選擇多個 skills。
 
-如果 AI 助理能讀取本機檔案，也能直接指定 `paper-presentation/SKILL.md`，要求依照指令與引用檔案執行，不需要依賴自動載入功能。
+### Windows / PowerShell
+
+```powershell
+.\scripts\install.ps1 --agent cursor --scope user --dry-run
+.\scripts\install.ps1 --agent cursor --scope user
+# 也可以直接執行 Python
+py -3 scripts/install.py --agent copilot --scope project --project "C:\work\my-project"
+```
+
+如果 PowerShell 執行原則阻擋腳本，請直接執行 Python 指令。macOS/Linux 的對應方式為 `python3 scripts/install.py ...`。
+
+### 更新或移除已安裝的 skill
+
+```bash
+git pull --ff-only
+sh scripts/install.sh --agent codex --scope user --skill paper-presentation --force
+```
+
+安裝程式會複製 `SKILL.md`、參考資料、範例與腳本，不會連線下載，也不會安裝 agent 工具或 Python。目的資料夾已存在時會回報錯誤；加上 `--force` 才會先將舊資料夾移到 `skills/` 同層的 `nailong-skills-backups/`，再安裝新版，並顯示備份路徑。備份放在載入目錄外，避免被重複辨識為 skill。每個 skill 都會先完成暫存複製，但多個 skills 的安裝不是單一交易。程式不接受含符號連結的目的路徑或 skill 內容；遇到此情況請改用一般目錄。
+
+移除時，只需刪除上表目錄下對應的 `<skill-name>/`。還原時，先將目前版本移出載入目錄，再將顯示的備份資料夾搬回 `skills/<skill-name>/`。修改或更新本專案不會自動同步到已安裝副本。
 
 ### 使用需求
 
-- 能讀取指令與相關檔案的 AI 助理。
-- 可存取的論文來源：PDF、可讀取的連結或貼上的文字。
-- 製作簡報時，需要產生 HTML 或投影片的能力。
-- 執行講稿輔助腳本需要 Python 3；腳本僅使用標準函式庫。
+- 支援 Agent Skills 的 agent 版本，以及讀取 skill 與相關檔案的權限。
+- 論文來源可以是 PDF、可讀取的連結或貼上的文字；讀取能力依 agent 提供的工具而異。
+- 產生 HTML 或投影片的能力；專用 Slides artifact 並非必要，skill 提供 HTML 替代流程。
+- 安裝與講稿輔助腳本需要 Python 3，兩者都僅使用標準函式庫。
 
 ## 使用方式
+
+### 在各 agent 中呼叫
+
+安裝後，請在 agent 中開啟目標專案。如果沒有出現 skill，請開始新工作階段，或使用下列重新載入方式。
+
+| 工具 | 使用方式 |
+| --- | --- |
+| Codex CLI / IDE | 輸入 `$paper-presentation` 並附上需求，或透過 `/skills` 選擇；桌面版有提供 skill 選單時可用 `@` 選取。 |
+| Claude Code | `/paper-presentation 請根據這篇論文製作 20 分鐘的報告。` |
+| Cursor | 選擇 `/paper-presentation`，或使用 `@` 提及 skill。 |
+| Copilot VS Code agent 模式 / CLI | `/paper-presentation 請根據這篇論文製作 20 分鐘的報告。` |
+| Gemini CLI | 輸入「請使用 paper-presentation skill 處理這篇論文」，依提示核准啟用；用 `/skills list` 查看、`/skills reload` 重新載入。 |
+| Windsurf / Cascade | 輸入 `@paper-presentation` 後接需求。 |
+| OpenCode | 輸入「請使用 paper-presentation skill 處理這篇論文」，由 agent 使用 skill 工具載入。本專案未啟用 OpenCode 選用的 slash command metadata。 |
+
+工具允許時，也能透過自然語言自動匹配。檔案安裝成功不代表雲端工作階段、PDF 讀取、artifact 或其他工具一定可用。[相容性與官方使用來源](docs/agent-compatibility.md)另有能力限制與原生安裝方式。
 
 提供論文、需要的產出、語言與報告限制：
 
@@ -91,6 +150,9 @@ python3 -I paper-presentation/scripts/build_script.py \
 nailong-skills/
 ├── README.md
 ├── README.zh-TW.md
+├── scripts/                  # Installer: Python, sh, PowerShell
+├── tests/                    # Installer tests
+├── docs/agent-compatibility.md
 └── paper-presentation/
     ├── SKILL.md
     ├── references/
